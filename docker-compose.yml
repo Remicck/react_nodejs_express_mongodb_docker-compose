@@ -1,0 +1,45 @@
+version: '3'
+services:
+  tm_nginx:
+    image: nginx:latest
+    container_name: tm_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "./docker/nginx/conf.d:/etc/nginx/conf.d"
+    links:
+      - tm_node_express
+
+  tm_node_express:
+    image: node:6.9
+    container_name: tm_node_express
+    hostname: tm_node_express
+    volumes:
+      - "./expressDir:/src"
+    working_dir: /src
+    command: [sh, -c, npm install && npm start]
+    links:
+      - 'tm_mongodb:mongo'
+    ports:
+      - "3000:3000"
+
+  tm_mongodb:
+    image: "mongo:latest"
+    volumes:
+     - mongo-data:/data/db
+    command: mongod --smallfiles  
+
+  tm_mongo-express:
+    container_name: tm_mongo-express
+    links:
+      - 'tm_mongodb:mongo'
+    image: "mongo-express:latest"
+    ports:
+    - "8081:8081"
+    environment:
+      - 'ME_CONFIG_OPTIONS_EDITORTHEME=ambiance'
+      - 'ME_CONFIG_BASICAUTH_USERNAME=user'
+      - 'ME_CONFIG_BASICAUTH_PASSWORD=password!'
+
+volumes:
+  mongo-data:

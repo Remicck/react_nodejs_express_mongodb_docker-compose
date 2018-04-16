@@ -1,0 +1,16 @@
+//common
+.clearfix::after{
+  content: "";
+  display: block;
+  clear: both;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
